@@ -60,9 +60,7 @@
       white-space: normal !important;
     }
 
-    /* ============================================================
-       상단 헤더
-       ============================================================ */
+    /* 상단 헤더 */
     header.paper-header {
       width: 100%;
       background: #ffffff;
@@ -138,24 +136,14 @@
       color: #047857;
       border-color: #a7f3d0;
     }
-    .btn-html:active {
-      background: #d1fae5;
-    }
 
     .btn-pdf {
       background: #fef2f2;
       color: #b91c1c;
       border-color: #fecaca;
     }
-    .btn-pdf:active {
-      background: #fee2e2;
-    }
 
-    /* ============================================================
-       [요청 1 반영: 탭 색상 명확화]
-       선택된 탭: 파란색(#2563eb)
-       선택되지 않은 탭: 하얀색(#ffffff)
-       ============================================================ */
+    /* 2행: 50:50 세그먼트 탭 바 (누른 탭: 파란색, 안 누른 탭: 하얀색) */
     .nav-tab-bar {
       display: flex;
       width: 100%;
@@ -177,26 +165,19 @@
       cursor: pointer;
       transition: all 0.15s ease;
       -webkit-tap-highlight-color: transparent;
-      
-      /* 디폴트 비활성 상태: 깨끗한 하얀색 배경 */
       background: #ffffff;
       color: #475569;
       border: 1px solid #cbd5e1;
     }
 
     .tab-segment.active {
-      /* 활성화 상태: 선명한 파란색 배경 & 흰색 글씨 */
       background: var(--primary) !important;
       color: #ffffff !important;
       border-color: var(--primary) !important;
       box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
     }
 
-    /* ============================================================
-       [요청 2 반영: 후리가나 버튼 디폴트 파란색]
-       디폴트(후리가나 있음): 파란색(#2563eb)
-       누르면(후리가나 없음): 하얀색(#ffffff)
-       ============================================================ */
+    /* 3행: 학습 옵션 툴바 */
     .options-bar {
       display: flex;
       justify-content: space-between;
@@ -241,54 +222,51 @@
       border-color: var(--primary) !important;
     }
 
-    /* 후리가나 토글 전용 스타일 */
+    /* 후리가나 버튼 디폴트 파란색, 누르면 하얀색 */
     #btnToggleRuby {
-      background: var(--primary); /* 디폴트 파란색 */
+      background: var(--primary);
       color: #ffffff;
       border-color: var(--primary);
       font-weight: 700;
     }
 
     #btnToggleRuby.ruby-off {
-      background: #ffffff !important; /* 꺼졌을 때 하얀색 */
+      background: #ffffff !important;
       color: #475569 !important;
       border-color: #cbd5e1 !important;
       font-weight: 600;
     }
 
-    /* ============================================================
-       [요청 3 반영: 정지 버튼 상태 색상 피드백]
-       정지 시 색상이 바뀌어 확실한 상태 확인 가능
-       ============================================================ */
+    /* 4행: 일체형 플레이어 바 */
     .player-bar {
       width: 100%;
       background: #0f172a;
       color: #ffffff;
       border-radius: 6px;
-      padding: 7px 10px;
+      padding: 8px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      flex-wrap: wrap;
     }
 
     .player-left {
       display: flex;
       align-items: center;
       gap: 6px;
+      flex-shrink: 0;
     }
 
     .btn-play-all {
       background: #38bdf8;
       color: #0f172a;
       border: none;
-      padding: 6px 13px;
+      padding: 6px 12px;
       border-radius: 5px;
       font-weight: 700;
       font-size: 0.82rem;
       cursor: pointer;
-      transition: background 0.15s;
+      white-space: nowrap;
     }
 
     .btn-play-all.playing {
@@ -300,33 +278,58 @@
       background: #334155;
       color: #e2e8f0;
       border: 1px solid #475569;
-      padding: 6px 10px;
+      padding: 6px 9px;
       border-radius: 5px;
       cursor: pointer;
       font-size: 0.82rem;
       font-weight: 600;
       transition: all 0.15s;
+      white-space: nowrap;
     }
 
-    /* 정지 상태 활성화 색상 (선명한 빨간색/주황색 피드백) */
     .btn-stop.is-stopped {
       background: #ef4444 !important;
       color: #ffffff !important;
       border-color: #ef4444 !important;
-      box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
     }
 
-    .now-playing-box {
-      font-size: 0.78rem;
-      color: #94a3b8;
-      white-space: nowrap;
+    /* ============================================================
+       [요청 반영: 지문 나오는 부분 - 선명한 하얀색 + 전광판 흐름 애니메이션]
+       ============================================================ */
+    .ticker-viewport {
+      flex: 1;
+      min-width: 0;
       overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 180px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      padding: 5px 8px;
+      margin: 0 4px;
+      height: 32px;
+      display: flex;
+      align-items: center;
     }
 
-    .now-playing-box strong {
-      color: #38bdf8;
+    .ticker-content {
+      white-space: nowrap;
+      color: #ffffff !important; /* 잘 보이는 선명한 순백색! */
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: inline-block;
+      width: 100%;
+    }
+
+    /* 전광판처럼 부드럽게 흐르는 클래스 */
+    .marquee-scroll {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marqueeScroll 14s linear infinite;
+    }
+
+    @keyframes marqueeScroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
     }
 
     .speed-select {
@@ -337,11 +340,10 @@
       border-radius: 5px;
       font-size: 0.75rem;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
-    /* ============================================================
-       본문 영역
-       ============================================================ */
+    /* 본문 영역 */
     main.document-body {
       width: 100%;
       max-width: 800px;
@@ -599,9 +601,7 @@
 </head>
 <body>
 
-  <!-- ============================================================
-       상단 헤더
-       ============================================================ -->
+  <!-- 상단 헤더 -->
   <header class="paper-header">
     <!-- 1. 타이틀 & 다운로드 버튼 -->
     <div class="top-brand-row">
@@ -621,13 +621,13 @@
       </div>
     </div>
 
-    <!-- 2. 가로 50:50 탭 전환 바 (누른 것은 파란색, 안 누른 것은 하얀색) -->
+    <!-- 2. 가로 50:50 탭 전환 바 -->
     <div class="nav-tab-bar">
       <button class="tab-segment active" id="tabBtn1" onclick="switchTab('tab1')">📖 원문 보기</button>
       <button class="tab-segment" id="tabBtn2" onclick="switchTab('tab2')">🔍 문장별 분석</button>
     </div>
 
-    <!-- 3. 학습 옵션 툴바 (글자 크기 & 디폴트 파란색 후리가나 버튼) -->
+    <!-- 3. 학습 옵션 툴바 -->
     <div class="options-bar">
       <div class="opt-group">
         <span class="opt-label">글자:</span>
@@ -636,20 +636,25 @@
         <button class="btn-chip" id="fontXLargeBtn" onclick="setFontScale('xlarge')">아주크게</button>
       </div>
       <div class="opt-group">
-        <!-- 디폴트 파란색 (후리가나 켜짐), 누르면 하얀색 (꺼짐) -->
         <button class="btn-chip" id="btnToggleRuby" onclick="toggleRuby()">후리가나</button>
         <button class="btn-chip" onclick="window.print()" title="화면 인쇄 / PDF 출력">🖨️ 인쇄</button>
       </div>
     </div>
 
-    <!-- 4. 일체형 플레이어 바 -->
+    <!-- 4. 일체형 플레이어 바 (전광판 자막 텍스트 뷰포트) -->
     <div class="player-bar">
       <div class="player-left">
         <button class="btn-play-all" id="btnPlayAll" onclick="togglePlayAll()">▶ 전체연속듣기</button>
-        <!-- 정지 버튼: 누르면 정지 상태 색상(빨간색 is-stopped) 피드백 -->
         <button class="btn-stop" id="btnStop" onclick="userStopAudio()">⏹ 정지</button>
       </div>
-      <div class="now-playing-box" id="nowPlayingText">문장 터치 시 재생</div>
+      
+      <!-- 지문 표시 뷰포트 (선명한 흰색 + 전광판 흐름) -->
+      <div class="ticker-viewport">
+        <div class="ticker-content" id="nowPlayingText">
+          문장을 터치하면 해당 음성이 재생됩니다.
+        </div>
+      </div>
+
       <select class="speed-select" id="speedSelect" onchange="setSpeed(parseFloat(this.value))">
         <option value="0.8">0.8x</option>
         <option value="1.0" selected>1.0x</option>
@@ -658,9 +663,7 @@
     </div>
   </header>
 
-  <!-- ============================================================
-       본문 영역
-       ============================================================ -->
+  <!-- 본문 영역 -->
   <main class="document-body">
 
     <!-- TAB 1: 회화문 전체 원문 -->
@@ -1437,7 +1440,7 @@
       }
     }
 
-    // [요청 1 완벽 반영] 탭 전환: 선택된 것은 파란색, 선택 안 된 것은 하얀색
+    // 탭 전환
     function switchTab(tabId) {
       document.querySelectorAll('.view-content').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
@@ -1454,29 +1457,36 @@
       }
     }
 
-    // [요청 2 완벽 반영] 후리가나 토글: 디폴트는 파란색(켜짐), 누르면 하얀색(꺼짐)
+    // 후리가나 토글
     function toggleRuby() {
       document.body.classList.toggle('hide-ruby');
       const isHidden = document.body.classList.contains('hide-ruby');
       const btn = document.getElementById('btnToggleRuby');
       
       if (isHidden) {
-        btn.classList.add('ruby-off'); // 하얀색
+        btn.classList.add('ruby-off');
       } else {
-        btn.classList.remove('ruby-off'); // 파란색
+        btn.classList.remove('ruby-off');
       }
     }
 
-    // [요청 3 완벽 반영] 정지 버튼 피드백: 정지 시 빨간색(is-stopped)으로 변함
+    // [요청 반영] 정지 버튼 클릭 시: 정지 문구 표시 & 버튼 빨간색 피드백
     function userStopAudio() {
       stopAudio();
       btnStop.classList.add('is-stopped');
+      setTickerText('⏹ 오디오가 정지되었습니다.', false);
       setTimeout(() => {
         btnStop.classList.remove('is-stopped');
       }, 1200);
     }
 
-    // 문장 재생
+    // 지문 표시 함수 (isScroll: true면 전광판처럼 흐르고, false면 가만히 있음)
+    function setTickerText(html, isScroll) {
+      nowPlayingText.className = 'ticker-content' + (isScroll ? ' marquee-scroll' : '');
+      nowPlayingText.innerHTML = html;
+    }
+
+    // 개별 문장 재생
     function playSentence(id, start, end) {
       stopAudio();
       btnStop.classList.remove('is-stopped');
@@ -1484,7 +1494,9 @@
       const d = dialogues.find(x => x.id === id);
       highlightSentence(id);
       
-      nowPlayingText.innerHTML = `<strong>${d.speaker.split()[0]}</strong>: ${d.jp_plain}`;
+      // 선명한 하얀색으로 화자 + 일본어 전체 문장 흐름 표시
+      const textToDisplay = `<strong>[${d.speaker.split()[0]}]</strong> ${d.jp_plain}  ──  ${d.ko}`;
+      setTickerText(textToDisplay, true);
 
       audio.currentTime = start;
       const p = audio.play();
@@ -1494,7 +1506,7 @@
       sentenceTimeout = setTimeout(() => {
         audio.pause();
         stopHighlight();
-        nowPlayingText.innerText = '재생 완료';
+        setTickerText('✅ 1회 듣기 완료 (문장을 터치하면 다시 재생)', false);
         btnStop.classList.add('is-stopped');
         setTimeout(() => btnStop.classList.remove('is-stopped'), 1000);
       }, duration);
@@ -1507,20 +1519,21 @@
         isPlayingAll = false;
         btnPlayAll.classList.remove('playing');
         btnPlayAll.innerText = '▶ 전체연속듣기';
-        nowPlayingText.innerText = '일시 정지됨';
         btnStop.classList.add('is-stopped');
+        setTickerText('⏸ 전체 재생이 일시 정지되었습니다.', false);
       } else {
         stopAudio();
         isPlayingAll = true;
         btnPlayAll.classList.add('playing');
         btnPlayAll.innerText = '⏸ 일시정지';
         btnStop.classList.remove('is-stopped');
-        nowPlayingText.innerText = '전체 연속 재생 중...';
+        setTickerText('▶ 전체 연속 재생 시작...', false);
         audio.currentTime = 0;
         audio.play().catch(() => {});
       }
     }
 
+    // 전체 재생 중 문장 흐름 업데이트
     audio.addEventListener('timeupdate', () => {
       if (isPlayingAll) {
         const cur = audio.currentTime;
@@ -1528,14 +1541,15 @@
         if (currentD && currentD.id !== currentSentenceId) {
           currentSentenceId = currentD.id;
           highlightSentence(currentD.id);
-          nowPlayingText.innerHTML = `<strong>${currentD.speaker.split()[0]}</strong>: ${currentD.jp_plain}`;
+          const fullText = `<strong>[${currentD.speaker.split()[0]}]</strong> ${currentD.jp_plain}  ──  ${currentD.ko}`;
+          setTickerText(fullText, true);
         }
       }
     });
 
     audio.addEventListener('ended', () => {
       stopAudio();
-      nowPlayingText.innerText = '전체 재생 완료';
+      setTickerText('🎉 전체 회화 재생이 완료되었습니다!', false);
       btnStop.classList.add('is-stopped');
     });
 
