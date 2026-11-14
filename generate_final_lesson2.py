@@ -469,6 +469,7 @@ html_content = f'''<!DOCTYPE html>
       transition: background-color 0.2s;
       cursor: pointer;
       border-bottom: 1px solid #f1f5f9;
+      scroll-margin-top: 15px;
     }}
     .dialogue-item:hover {{
       background-color: #f8fafc;
@@ -564,6 +565,7 @@ html_content = f'''<!DOCTYPE html>
       background: #ffffff;
       border-left: 5px solid #cbd5e1;
       box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      scroll-margin-top: 15px;
     }}
 
     .card-item.speaker-mire-card {{ border-left-color: var(--mire-color); }}
@@ -823,7 +825,7 @@ html_content = f'''<!DOCTYPE html>
 
     </header>
 
-    <!-- 오디오 엘리먼트 (Base64 인라인 내장: data:audio/mp3;base64,... 필수) -->
+    <!-- 오디오 엘리먼트 (Base64 인라인 내장) -->
     <audio id="mainAudio" preload="auto">
       <source src="data:audio/mp3;base64,{audio_b64}" type="audio/mp3">
     </audio>
@@ -904,10 +906,14 @@ html_content = f'''<!DOCTYPE html>
       }}
     }}
 
-    // [요청 2 반영] 지문 티커: 한글빼고 사람이름빼고 오직 일본어 원문만 출력
+    // [요청 2 반영] 지문 티커: 한글빼고 사람이름빼고 오직 일본어 원문만 출력 (애니메이션 0% 리셋 보장)
     function setTickerText(text, isScroll) {{
-      nowPlayingText.className = 'ticker-content' + (isScroll ? ' marquee-scroll' : '');
+      nowPlayingText.classList.remove('marquee-scroll');
+      void nowPlayingText.offsetWidth; // DOM reflow trigger to restart CSS keyframe animation from 0%
       nowPlayingText.innerText = text;
+      if (isScroll) {{
+        nowPlayingText.classList.add('marquee-scroll');
+      }}
     }}
 
     // 모든 UI 버튼 상태 동기화
@@ -919,7 +925,7 @@ html_content = f'''<!DOCTYPE html>
           btnPlayAll.innerText = '⏸ 일시정지';
         }} else {{
           btnPlayAll.classList.remove('playing');
-          btnPlayAll.innerText = '▶ 전체듣기';
+          btnPlayAll.innerText = '▶ 이어듣기';
         }}
       }} else {{
         btnPlayAll.classList.remove('playing');
@@ -987,7 +993,7 @@ html_content = f'''<!DOCTYPE html>
       }});
     }}
 
-    // [전체듣기 토글]
+    // [전체듣기 토글 (상단 바)]
     function togglePlayAll() {{
       if (currentMode === 'all') {{
         if (!audio.paused) {{
@@ -995,8 +1001,9 @@ html_content = f'''<!DOCTYPE html>
           setTickerText('⏸ 전체 재생이 일시 정지되었습니다.', false);
         }} else {{
           audio.play().catch(e => console.error(e));
-          const d = dialogues.find(x => audio.currentTime >= x.start && audio.currentTime < x.end);
-          if (d) setTickerText(d.jp_plain, true);
+          const cur = audio.currentTime;
+          const d = dialogues.find(x => cur >= x.start && cur < x.end) || dialogues[0];
+          setTickerText(d.jp_plain, true);
         }}
       }} else {{
         stopAudio();
@@ -1011,14 +1018,26 @@ html_content = f'''<!DOCTYPE html>
       updatePlaybackUI();
     }}
 
+    // 연속 재생 중 문장 흐름 및 자동 스크롤 추적
     audio.addEventListener('timeupdate', () => {{
       if (currentMode === 'all') {{
         const cur = audio.currentTime;
-        const currentD = dialogues.find(d => cur >= d.start && cur < d.end);
+        let currentD = dialogues.find(d => cur >= d.start && cur < d.end);
+        
+        // 경계 구간 완충 보정
+        if (!currentD) {{
+          for (let i = 0; i < dialogues.length; i++) {{
+            if (cur < dialogues[i].end) {{
+              currentD = dialogues[i];
+              break;
+            }}
+          }}
+        }}
+
         if (currentD && currentD.id !== currentSentenceId) {{
           currentSentenceId = currentD.id;
           highlightSentence(currentD.id);
-          // [요청 2 반영] 순수 일본어 문장만 노출
+          // [요청 2 반영] 순수 일본어 문장만 노출 (앞머리부터 리셋)
           setTickerText(currentD.jp_plain, true);
           updatePlaybackUI();
         }}
@@ -1030,13 +1049,94 @@ html_content = f'''<!DOCTYPE html>
       setTickerText('🎉 전체 회화 재생이 완료되었습니다!', false);
     }});
 
-    // [개별 문장 재생 실행 함수]
+    // [원문보기 연속 재생 및 토글]
+    // 원문보기 탭에서 특정 문장의 재생 버튼을 누르면 해당 문장부터 끝까지 연속 재생 진행!
+    function toggleRowPlay(id) {{
+      const d = dialogues.find(x => x.id === id);
+      if (!d) return;
+
+      if (currentSentenceId === id && currentMode === 'all') {{
+        if (!audio.paused) {{
+          audio.pause();
+          setTickerText('⏸ 일시 정지되었습니다.', false);
+        }} else {{
+          audio.play().catch(e => console.error(e));
+          setTickerText(d.jp_plain, true);
+        }}
+        updatePlaybackUI();
+      }} else {{
+        // 해당 문장부터 끝까지 이어서 연속 재생 시작!
+        stopAudio();
+        currentMode = 'all';
+        currentSentenceId = d.id;
+        audio.currentTime = d.start;
+        audio.play().catch(e => console.error(e));
+        highlightSentence(d.id);
+        setTickerText(d.jp_plain, true);
+        updatePlaybackUI();
+      }}
+    }}
+
+    // [문장별 분석 1회 듣기 토글]
+    function toggleCardPlay1(id) {{
+      const d = dialogues.find(x => x.id === id);
+      if (!d) return;
+
+      if (currentSentenceId === id && currentMode === 'single') {{
+        if (!audio.paused) {{
+          if (sentenceTimeout) clearTimeout(sentenceTimeout);
+          audio.pause();
+          setTickerText('⏸ 일시 정지되었습니다.', false);
+        }} else {{
+          audio.play().catch(e => console.error(e));
+          setTickerText(d.jp_plain, true);
+          const remaining = Math.max(0.1, (d.end - audio.currentTime)) * 1000 / audio.playbackRate;
+          sentenceTimeout = setTimeout(() => {{
+            onSentenceComplete(id, d.start, d.end);
+          }}, remaining);
+        }}
+        updatePlaybackUI();
+      }} else {{
+        stopAudio();
+        currentMode = 'single';
+        repeatRemaining = 1;
+        playSentenceSlice(id, d.start, d.end);
+      }}
+    }}
+
+    // [문장별 분석 3회 반복 토글]
+    function toggleCardPlay3(id) {{
+      const d = dialogues.find(x => x.id === id);
+      if (!d) return;
+
+      if (currentSentenceId === id && currentMode === 'repeat3') {{
+        if (!audio.paused) {{
+          if (sentenceTimeout) clearTimeout(sentenceTimeout);
+          audio.pause();
+          setTickerText('⏸ 3회 반복이 일시 정지되었습니다.', false);
+        }} else {{
+          audio.play().catch(e => console.error(e));
+          setTickerText(d.jp_plain, true);
+          const remaining = Math.max(0.1, (d.end - audio.currentTime)) * 1000 / audio.playbackRate;
+          sentenceTimeout = setTimeout(() => {{
+            onSentenceComplete(id, d.start, d.end);
+          }}, remaining);
+        }}
+        updatePlaybackUI();
+      }} else {{
+        stopAudio();
+        currentMode = 'repeat3';
+        repeatRemaining = 3;
+        playSentenceSlice(id, d.start, d.end);
+      }}
+    }}
+
+    // 개별 문장 단독/반복 재생 실행기
     function playSentenceSlice(id, start, end) {{
       currentSentenceId = id;
       highlightSentence(id);
 
       const d = dialogues.find(x => x.id === id);
-      // [요청 2 반영] 오직 일본어 원문만 흘러감
       setTickerText(d.jp_plain, true);
 
       audio.currentTime = start;
@@ -1077,87 +1177,6 @@ html_content = f'''<!DOCTYPE html>
       updatePlaybackUI();
     }}
 
-    // [요청 3 반영] 원문보기 행 플레이어 토글 (재생 / 일시정지)
-    function toggleRowPlay(id) {{
-      const d = dialogues.find(x => x.id === id);
-      if (!d) return;
-
-      if (currentSentenceId === id && currentMode === 'single') {{
-        if (!audio.paused) {{
-          if (sentenceTimeout) clearTimeout(sentenceTimeout);
-          audio.pause();
-          setTickerText('⏸ 일시 정지되었습니다.', false);
-        }} else {{
-          audio.play().catch(e => console.error(e));
-          setTickerText(d.jp_plain, true);
-          const remaining = Math.max(0.1, (d.end - audio.currentTime)) * 1000 / audio.playbackRate;
-          sentenceTimeout = setTimeout(() => {{
-            onSentenceComplete(id, d.start, d.end);
-          }}, remaining);
-        }}
-        updatePlaybackUI();
-      }} else {{
-        stopAudio();
-        currentMode = 'single';
-        repeatRemaining = 1;
-        playSentenceSlice(id, d.start, d.end);
-      }}
-    }}
-
-    // [요청 4 반영] 문장별 분석 1회 듣기 토글
-    function toggleCardPlay1(id) {{
-      const d = dialogues.find(x => x.id === id);
-      if (!d) return;
-
-      if (currentSentenceId === id && currentMode === 'single') {{
-        if (!audio.paused) {{
-          if (sentenceTimeout) clearTimeout(sentenceTimeout);
-          audio.pause();
-          setTickerText('⏸ 일시 정지되었습니다.', false);
-        }} else {{
-          audio.play().catch(e => console.error(e));
-          setTickerText(d.jp_plain, true);
-          const remaining = Math.max(0.1, (d.end - audio.currentTime)) * 1000 / audio.playbackRate;
-          sentenceTimeout = setTimeout(() => {{
-            onSentenceComplete(id, d.start, d.end);
-          }}, remaining);
-        }}
-        updatePlaybackUI();
-      }} else {{
-        stopAudio();
-        currentMode = 'single';
-        repeatRemaining = 1;
-        playSentenceSlice(id, d.start, d.end);
-      }}
-    }}
-
-    // [요청 4 반영] 문장별 분석 3회 반복 토글
-    function toggleCardPlay3(id) {{
-      const d = dialogues.find(x => x.id === id);
-      if (!d) return;
-
-      if (currentSentenceId === id && currentMode === 'repeat3') {{
-        if (!audio.paused) {{
-          if (sentenceTimeout) clearTimeout(sentenceTimeout);
-          audio.pause();
-          setTickerText('⏸ 3회 반복이 일시 정지되었습니다.', false);
-        }} else {{
-          audio.play().catch(e => console.error(e));
-          setTickerText(d.jp_plain, true);
-          const remaining = Math.max(0.1, (d.end - audio.currentTime)) * 1000 / audio.playbackRate;
-          sentenceTimeout = setTimeout(() => {{
-            onSentenceComplete(id, d.start, d.end);
-          }}, remaining);
-        }}
-        updatePlaybackUI();
-      }} else {{
-        stopAudio();
-        currentMode = 'repeat3';
-        repeatRemaining = 3;
-        playSentenceSlice(id, d.start, d.end);
-      }}
-    }}
-
     // 개별 정지 버튼 (원문보기 및 문장별 분석 카드 정지)
     function stopSentence(id) {{
       stopAudio();
@@ -1186,12 +1205,25 @@ html_content = f'''<!DOCTYPE html>
       updatePlaybackUI();
     }}
 
+    // 하이라이트 및 화면 부드러운 자동 스크롤 추적
     function highlightSentence(id) {{
       stopHighlight();
       const row = document.getElementById('row-d-' + id);
       const card = document.getElementById('card-d-' + id);
-      if (row) row.classList.add('playing');
-      if (card) card.classList.add('playing');
+      if (row) {{
+        row.classList.add('playing');
+        // 원문보기 탭 활성화 시 현재 재생 중인 행으로 화면 자동 스크롤
+        if (document.getElementById('tab1').classList.contains('active')) {{
+          row.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+        }}
+      }}
+      if (card) {{
+        card.classList.add('playing');
+        // 문장별 분석 탭 활성화 시 현재 카드 자동 스크롤
+        if (document.getElementById('tab2').classList.contains('active')) {{
+          card.scrollIntoView({{ behavior: 'smooth', block: 'nearest' }});
+        }}
+      }}
     }}
 
     function stopHighlight() {{
