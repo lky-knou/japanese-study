@@ -14,14 +14,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   
   <style>
-    /*
-      [핵심 수정: 긴 문장 자동 줄바꿈 & 반응형 최적화]
-      1. word-break: break-all + overflow-wrap: anywhere 
-         -> 일본어/한국어가 절대 화면 밖이나 카드 오른쪽으로 튀어나가지 않고 100% 자동 줄바꿈!
-      2. 100% 완전 단일 순백색(#ffffff) 일체형 배경 -> 좌우 색상 분리 원천 차단
-      3. position: static 헤더 -> 본문과 한 덩어리로 같이 스크롤/확대
-      4. 모바일 화면 폭 100% 풀 반응형 레이아웃
-    */
     :root {
       --primary: #2563eb;
       --primary-dark: #1d4ed8;
@@ -53,15 +45,14 @@
       font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
       line-height: 1.6;
       -webkit-text-size-adjust: 100%;
-      overflow-x: hidden; /* 가로 스크롤 완전 방지 */
+      overflow-x: hidden;
     }
 
-    /* 모든 텍스트 강제 자동 줄바꿈 (옆으로 튀어나감 완전 해결) */
+    /* 텍스트 자동 줄바꿈 (옆으로 튀어나감 100% 방지) */
     .dialogue-text, 
     .card-japanese, 
     .card-pron, 
     .card-ko, 
-    .jp-line,
     .details-box ul li {
       word-break: break-all !important;
       overflow-wrap: anywhere !important;
@@ -69,118 +60,184 @@
       white-space: normal !important;
     }
 
-    /* 문서 일체형 헤더 (스크롤/확대 시 본문과 같이 한 덩어리로 움직임) */
+    /* ============================================================
+       [상단 헤더 전면 재설계: 정돈된 모바일 레이아웃]
+       ============================================================ */
     header.paper-header {
       width: 100%;
       background: #ffffff;
       border-bottom: 2px solid #0f172a;
-      padding: 14px 12px 10px 12px;
+      padding: 12px 14px 10px 14px;
       max-width: 800px;
       margin: 0 auto;
     }
 
-    .title-row {
+    /* 1행: 타이틀 & 다운로드 버튼 그룹 */
+    .top-brand-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
+      gap: 8px;
       margin-bottom: 10px;
+      flex-wrap: wrap;
     }
 
-    .title-row h1 {
-      font-size: calc(1.2rem * var(--font-scale));
-      font-weight: 700;
-      color: #0f172a;
+    .title-wrap {
       display: flex;
       align-items: center;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .title-row .badge {
+    .title-wrap h1 {
+      font-size: calc(1.15rem * var(--font-scale));
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+
+    .title-wrap .badge {
       background: #e0e7ff;
       color: #3730a3;
       font-size: 0.72rem;
       padding: 2px 7px;
       border-radius: 9999px;
       font-weight: 600;
+      white-space: nowrap;
     }
 
-    /* 초슬림 반응형 툴바 */
-    .toolbar {
+    .download-actions {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
       gap: 6px;
-      background: #f8fafc;
-      padding: 8px 10px;
-      border-radius: 8px;
-      border: 1px solid var(--border-line);
     }
 
-    .btn-group {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-
-    button.btn, a.btn {
+    .btn-action {
       font-family: inherit;
-      font-size: 0.82rem;
-      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 5px 9px;
       border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      background: #ffffff;
-      color: var(--text-main);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-weight: 600;
-      white-space: nowrap;
       text-decoration: none;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .btn-action:active {
+      transform: scale(0.97);
+    }
+
+    /* HTML 저장 (음성 내장) */
+    .btn-html {
+      background: #ecfdf5;
+      color: #047857;
+      border-color: #a7f3d0;
+    }
+    .btn-html:active {
+      background: #d1fae5;
+    }
+
+    /* PDF 저장 (음성 없는 원본 교재) */
+    .btn-pdf {
+      background: #fef2f2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+    .btn-pdf:active {
+      background: #fee2e2;
+    }
+
+    /* 2행: 50:50 세그먼트 탭 바 (모바일 최적화) */
+    .nav-tab-bar {
+      display: flex;
+      width: 100%;
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 4px;
+      margin-bottom: 8px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .tab-segment {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .tab-segment.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
+    }
+
+    /* 3행: 학습 옵션 툴바 (글자 크기 & 후리가나) */
+    .options-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      padding: 2px 0 6px 0;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .opt-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .opt-label {
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      font-weight: 700;
+      margin-right: 2px;
+    }
+
+    .btn-chip {
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: var(--text-main);
+      cursor: pointer;
       transition: all 0.1s;
       -webkit-tap-highlight-color: transparent;
     }
 
-    button.btn:active, a.btn:active {
-      background: #e2e8f0;
+    .btn-chip.active {
+      background: #0f172a;
+      color: #ffffff;
+      border-color: #0f172a;
     }
 
-    button.btn.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    button.btn-primary {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    button.btn-success {
-      background: #059669;
-      color: white;
-      border-color: #059669;
-    }
-
-    button.btn-sm {
-      padding: 4px 7px;
-      font-size: 0.75rem;
-    }
-
-    /* 일체형 플레이어 바 (헤더 바로 아래 착 붙음) */
-    .integrated-player-bar {
+    /* 4행: 일체형 플레이어 바 */
+    .player-bar {
       width: 100%;
-      max-width: 800px;
-      margin: 8px auto 0 auto;
-      padding: 8px 10px;
       background: #0f172a;
       color: #ffffff;
       border-radius: 6px;
+      padding: 7px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -194,37 +251,37 @@
       gap: 6px;
     }
 
-    .player-play-btn {
+    .btn-play-all {
       background: #38bdf8;
       color: #0f172a;
       border: none;
       padding: 5px 12px;
       border-radius: 5px;
       font-weight: 700;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       cursor: pointer;
     }
 
-    .player-stop-btn {
+    .btn-stop {
       background: #334155;
       color: white;
       border: none;
       padding: 5px 8px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
     }
 
-    .now-playing-text {
+    .now-playing-box {
       font-size: 0.78rem;
       color: #94a3b8;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 200px;
+      max-width: 180px;
     }
 
-    .now-playing-text strong {
+    .now-playing-box strong {
       color: #38bdf8;
     }
 
@@ -238,16 +295,17 @@
       cursor: pointer;
     }
 
-    /* 본문 영역 */
+    /* ============================================================
+       본문 영역
+       ============================================================ */
     main.document-body {
       width: 100%;
       max-width: 800px;
       margin: 12px auto;
-      padding: 0 10px 60px 10px;
+      padding: 0 12px 60px 12px;
       background: #ffffff !important;
     }
 
-    /* 요미가나(루비) */
     ruby {
       ruby-position: over;
       ruby-align: center;
@@ -268,7 +326,6 @@
       opacity: 0;
     }
 
-    /* 탭 1: 원문 대화 목록 */
     .view-content {
       display: none;
     }
@@ -276,6 +333,7 @@
       display: block;
     }
 
+    /* 탭 1 */
     .dialogue-list {
       display: flex;
       flex-direction: column;
@@ -326,7 +384,7 @@
     }
 
     .speaker-name {
-      width: 60px;
+      width: 58px;
       flex-shrink: 0;
       font-weight: 700;
       font-size: calc(1.02rem * var(--font-scale));
@@ -357,7 +415,7 @@
       color: #475569;
     }
 
-    /* 탭 2: 문장별 상세 분석 (화면 꽉 채우는 카드형 & 튀어나감 원천 방지) */
+    /* 탭 2 */
     .scene-title {
       background: #ecfdf5;
       border-left: 5px solid #059669;
@@ -378,7 +436,7 @@
       margin-bottom: 14px;
       background: #ffffff;
       border-left: 5px solid #cbd5e1;
-      overflow: hidden; /* 테두리 밖 넘침 방지 */
+      overflow: hidden;
     }
 
     .card-item.speaker-mire-card { border-left-color: var(--mire-color); }
@@ -474,60 +532,89 @@
         grid-template-columns: 1fr;
       }
       .speaker-name {
-        width: 52px;
+        width: 50px;
       }
       main.document-body {
         padding: 0 8px 60px 8px;
+      }
+    }
+
+    @media print {
+      header.paper-header, .play-btn-circle, .btn-action, .options-bar, .player-bar {
+        display: none !important;
+      }
+      body {
+        background: white;
+        color: black;
+      }
+      .view-content {
+        display: block !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- 문서 일체형 헤더 (고정 없음, 문서와 함께 100% 동일 비율 확대) -->
+  <!-- ============================================================
+       [상단 헤더: 요청하신 동그라미 친 영역의 정돈된 디자인]
+       ============================================================ -->
   <header class="paper-header">
-    <div class="title-row">
-      <h1>
-        <span>第2課 黒門市場 (제2과 구로몬 시장)</span>
-        <span class="badge">인터랙티브 회화</span>
-      </h1>
-      <button class="btn btn-sm btn-success" onclick="downloadHtmlFile()" title="오프라인 저장용 파일 다운로드">📥 파일 저장</button>
-    </div>
-
-    <!-- 심플 반응형 툴바 -->
-    <div class="toolbar">
-      <div class="btn-group">
-        <button class="btn btn-primary active" id="tabBtn1" onclick="switchTab('tab1')">📖 원문 보기</button>
-        <button class="btn" id="tabBtn2" onclick="switchTab('tab2')">🔍 문장별 분석</button>
+    <!-- 1. 타이틀 & 다운로드 버튼 -->
+    <div class="top-brand-row">
+      <div class="title-wrap">
+        <h1>第2課 黒門市場</h1>
+        <span class="badge">제2과 회화</span>
       </div>
-      <div class="btn-group">
-        <button class="btn btn-sm active" id="fontNormalBtn" onclick="setFontScale('normal')">보통</button>
-        <button class="btn btn-sm" id="fontLargeBtn" onclick="setFontScale('large')">크게</button>
-        <button class="btn btn-sm" id="fontXLargeBtn" onclick="setFontScale('xlarge')">아주크게</button>
-        <button class="btn btn-sm" id="btnToggleRuby" onclick="toggleRuby()">후리가나</button>
+      <div class="download-actions">
+        <!-- 음성 포함 완전 독립형 HTML 저장 -->
+        <button class="btn-action btn-html" onclick="downloadHtmlFile()" title="음성이 내장된 인터랙티브 HTML 파일 다운로드">
+          📥 HTML 저장
+        </button>
+        <!-- 음성 없는 원본 교재 PDF 다운로드 -->
+        <a class="btn-action btn-pdf" href="lesson2_note.pdf" download="제2과_구로몬시장_회화문_학습노트.pdf" title="음성 없는 교재 원본 PDF 다운로드">
+          📄 PDF 저장
+        </a>
       </div>
     </div>
 
-    <!-- 일체형 플레이어 바 (헤더 바로 아래 위치) -->
-    <div class="integrated-player-bar">
+    <!-- 2. 가로 50:50 탭 전환 바 (모바일 터치 최적화) -->
+    <div class="nav-tab-bar">
+      <button class="tab-segment active" id="tabBtn1" onclick="switchTab('tab1')">📖 원문 보기</button>
+      <button class="tab-segment" id="tabBtn2" onclick="switchTab('tab2')">🔍 문장별 분석</button>
+    </div>
+
+    <!-- 3. 학습 옵션 툴바 (글자 크기 & 후리가나 & 인쇄) -->
+    <div class="options-bar">
+      <div class="opt-group">
+        <span class="opt-label">글자:</span>
+        <button class="btn-chip active" id="fontNormalBtn" onclick="setFontScale('normal')">보통</button>
+        <button class="btn-chip" id="fontLargeBtn" onclick="setFontScale('large')">크게</button>
+        <button class="btn-chip" id="fontXLargeBtn" onclick="setFontScale('xlarge')">아주크게</button>
+      </div>
+      <div class="opt-group">
+        <button class="btn-chip" id="btnToggleRuby" onclick="toggleRuby()">후리가나</button>
+        <button class="btn-chip" onclick="window.print()" title="화면 인쇄 / PDF 출력">🖨️ 인쇄/PDF</button>
+      </div>
+    </div>
+
+    <!-- 4. 일체형 플레이어 바 -->
+    <div class="player-bar">
       <div class="player-left">
-        <button class="player-play-btn" id="btnPlayAll" onclick="togglePlayAll()">▶ 전체연속듣기</button>
-        <button class="player-stop-btn" onclick="stopAudio()">⏹ 정지</button>
+        <button class="btn-play-all" id="btnPlayAll" onclick="togglePlayAll()">▶ 전체연속듣기</button>
+        <button class="btn-stop" onclick="stopAudio()">⏹</button>
       </div>
-      <div class="now-playing-text" id="nowPlayingText">
-        문장을 터치하면 해당 음성이 재생됩니다.
-      </div>
-      <div>
-        <select class="speed-select" id="speedSelect" onchange="setSpeed(parseFloat(this.value))">
-          <option value="0.8">0.8x</option>
-          <option value="1.0" selected>1.0x</option>
-          <option value="1.2">1.2x</option>
-        </select>
-      </div>
+      <div class="now-playing-box" id="nowPlayingText">문장 터치 시 재생</div>
+      <select class="speed-select" id="speedSelect" onchange="setSpeed(parseFloat(this.value))">
+        <option value="0.8">0.8x</option>
+        <option value="1.0" selected>1.0x</option>
+        <option value="1.2">1.2x</option>
+      </select>
     </div>
   </header>
 
-  <!-- 문서 본문 (순백색 일체형 배경) -->
+  <!-- ============================================================
+       본문 영역
+       ============================================================ -->
   <main class="document-body">
 
     <!-- TAB 1: 회화문 전체 원문 -->
@@ -663,7 +750,7 @@
           <div class="card-speaker speaker-stage">
             👤 지문
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(1, 0.0, 3.2)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(1, 0.0, 3.2)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(1, 0.0, 3.2)" title="터치하여 듣기">
@@ -694,7 +781,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(2, 3.2, 8.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(2, 3.2, 8.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(2, 3.2, 8.0)" title="터치하여 듣기">
@@ -725,7 +812,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(3, 8.0, 15.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(3, 8.0, 15.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(3, 8.0, 15.0)" title="터치하여 듣기">
@@ -756,7 +843,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(4, 15.0, 21.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(4, 15.0, 21.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(4, 15.0, 21.0)" title="터치하여 듣기">
@@ -787,7 +874,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(5, 21.0, 34.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(5, 21.0, 34.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(5, 21.0, 34.0)" title="터치하여 듣기">
@@ -818,7 +905,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(6, 34.0, 42.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(6, 34.0, 42.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(6, 34.0, 42.0)" title="터치하여 듣기">
@@ -849,7 +936,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(7, 42.0, 51.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(7, 42.0, 51.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(7, 42.0, 51.0)" title="터치하여 듣기">
@@ -880,7 +967,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(8, 51.0, 54.5)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(8, 51.0, 54.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(8, 51.0, 54.5)" title="터치하여 듣기">
@@ -911,7 +998,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(9, 54.5, 58.5)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(9, 54.5, 58.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(9, 54.5, 58.5)" title="터치하여 듣기">
@@ -942,7 +1029,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(10, 58.5, 63.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(10, 58.5, 63.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(10, 58.5, 63.0)" title="터치하여 듣기">
@@ -977,7 +1064,7 @@
           <div class="card-speaker speaker-stage">
             👤 지문
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(11, 63.0, 66.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(11, 63.0, 66.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(11, 63.0, 66.0)" title="터치하여 듣기">
@@ -1008,7 +1095,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(12, 66.0, 69.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(12, 66.0, 69.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(12, 66.0, 69.0)" title="터치하여 듣기">
@@ -1039,7 +1126,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(13, 69.0, 76.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(13, 69.0, 76.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(13, 69.0, 76.0)" title="터치하여 듣기">
@@ -1070,7 +1157,7 @@
           <div class="card-speaker speaker-stage">
             👤 지문
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(14, 76.0, 77.5)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(14, 76.0, 77.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(14, 76.0, 77.5)" title="터치하여 듣기">
@@ -1101,7 +1188,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(15, 77.5, 84.0)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(15, 77.5, 84.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(15, 77.5, 84.0)" title="터치하여 듣기">
@@ -1132,7 +1219,7 @@
           <div class="card-speaker speaker-ojisan">
             👤 おじさん (아저씨)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(16, 84.0, 89.5)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(16, 84.0, 89.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(16, 84.0, 89.5)" title="터치하여 듣기">
@@ -1163,7 +1250,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(17, 89.5, 94.5)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(17, 89.5, 94.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(17, 89.5, 94.5)" title="터치하여 듣기">
@@ -1194,7 +1281,7 @@
           <div class="card-speaker speaker-ojisan">
             👤 おじさん (아저씨)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(18, 94.5, 101.5)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(18, 94.5, 101.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(18, 94.5, 101.5)" title="터치하여 듣기">
@@ -1225,7 +1312,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary btn-sm" onclick="playSentence(19, 101.5, 103.65)">▶ 1회 듣기</button>
+          <button class="btn-chip" style="color: var(--primary); font-weight: bold;" onclick="playSentence(19, 101.5, 103.65)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(19, 101.5, 103.65)" title="터치하여 듣기">
@@ -1400,6 +1487,7 @@
       document.body.classList.toggle('hide-ruby');
       const isHidden = document.body.classList.contains('hide-ruby');
       document.getElementById('btnToggleRuby').classList.toggle('active', isHidden);
+      document.getElementById('btnToggleRuby').innerText = isHidden ? '후리가나 숨김' : '후리가나 표시';
     }
 
     // 오프라인 HTML 파일 다운로드
