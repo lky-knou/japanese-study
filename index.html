@@ -48,7 +48,7 @@
       overflow-x: hidden;
     }
 
-    /* 텍스트 자동 줄바꿈 (옆으로 튀어나감 100% 방지) */
+    /* 텍스트 자동 줄바꿈 */
     .dialogue-text, 
     .card-japanese, 
     .card-pron, 
@@ -60,46 +60,50 @@
       white-space: normal !important;
     }
 
-    /* 상단 헤더 */
+    /* ============================================================
+       상단 헤더
+       ============================================================ */
     header.paper-header {
       width: 100%;
       background: #ffffff;
       border-bottom: 2px solid #0f172a;
-      padding: 12px 14px 10px 14px;
+      padding: 10px 12px 10px 12px;
       max-width: 800px;
       margin: 0 auto;
     }
 
-    /* 1행: 타이틀 & 다운로드 버튼 */
+    /* [요청 1 반영] 1행: 좌측 제목 ↔ 우측 끝 저장 버튼 2개 (1줄 완벽 정렬) */
     .top-brand-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+      width: 100%;
     }
 
     .title-wrap {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
+      gap: 5px;
+      flex-shrink: 1;
+      min-width: 0;
     }
 
     .title-wrap h1 {
-      font-size: calc(1.15rem * var(--font-scale));
+      font-size: calc(1.08rem * var(--font-scale));
       font-weight: 700;
       color: #0f172a;
       margin: 0;
-      letter-spacing: -0.3px;
+      white-space: nowrap;
+      letter-spacing: -0.4px;
     }
 
     .title-wrap .badge {
       background: #e0e7ff;
       color: #3730a3;
-      font-size: 0.72rem;
-      padding: 2px 7px;
+      font-size: 0.68rem;
+      padding: 2px 6px;
       border-radius: 9999px;
       font-weight: 600;
       white-space: nowrap;
@@ -108,19 +112,20 @@
     .download-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      flex-shrink: 0;
     }
 
     .btn-action {
       font-family: inherit;
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 5px 9px;
-      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 5px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       text-decoration: none;
       transition: all 0.15s ease;
       white-space: nowrap;
@@ -143,14 +148,14 @@
       border-color: #fecaca;
     }
 
-    /* 2행: 50:50 세그먼트 탭 바 (누른 탭: 파란색, 안 누른 탭: 하얀색) */
+    /* 2행: 50:50 세그먼트 탭 바 */
     .nav-tab-bar {
       display: flex;
       width: 100%;
       background: #f8fafc;
       border-radius: 8px;
-      padding: 4px;
-      gap: 6px;
+      padding: 3px;
+      gap: 5px;
       margin-bottom: 8px;
       border: 1px solid #cbd5e1;
     }
@@ -158,8 +163,8 @@
     .tab-segment {
       flex: 1;
       text-align: center;
-      padding: 9px 0;
-      font-size: 0.9rem;
+      padding: 8px 0;
+      font-size: 0.88rem;
       font-weight: 700;
       border-radius: 6px;
       cursor: pointer;
@@ -191,12 +196,12 @@
     .opt-group {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       flex-wrap: wrap;
     }
 
     .opt-label {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--text-sub);
       font-weight: 700;
       margin-right: 2px;
@@ -204,10 +209,10 @@
 
     .btn-chip {
       font-family: inherit;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
-      padding: 4px 9px;
-      border-radius: 5px;
+      padding: 4px 8px;
+      border-radius: 4px;
       border: 1px solid #cbd5e1;
       background: #ffffff;
       color: #475569;
@@ -222,7 +227,6 @@
       border-color: var(--primary) !important;
     }
 
-    /* 후리가나 버튼 디폴트 파란색, 누르면 하얀색 */
     #btnToggleRuby {
       background: var(--primary);
       color: #ffffff;
@@ -243,7 +247,7 @@
       background: #0f172a;
       color: #ffffff;
       border-radius: 6px;
-      padding: 8px 10px;
+      padding: 7px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -257,11 +261,12 @@
       flex-shrink: 0;
     }
 
+    /* [요청 2 반영] 전체연속듣기 -> 전체듣기로 변경 */
     .btn-play-all {
       background: #38bdf8;
       color: #0f172a;
       border: none;
-      padding: 6px 12px;
+      padding: 6px 11px;
       border-radius: 5px;
       font-weight: 700;
       font-size: 0.82rem;
@@ -295,7 +300,7 @@
     }
 
     /* ============================================================
-       [요청 반영: 지문 나오는 부분 - 선명한 하얀색 + 전광판 흐름 애니메이션]
+       [요청 3 반영: 문장 앞에서 바로 시작하는 자막 흐름 애니메이션]
        ============================================================ */
     .ticker-viewport {
       flex: 1;
@@ -313,22 +318,26 @@
 
     .ticker-content {
       white-space: nowrap;
-      color: #ffffff !important; /* 잘 보이는 선명한 순백색! */
+      color: #ffffff !important; /* 순백색 */
       font-size: 0.84rem;
       font-weight: 600;
       display: inline-block;
       width: 100%;
     }
 
-    /* 전광판처럼 부드럽게 흐르는 클래스 */
+    /*
+      문장 시작 즉시 앞부분(첫 글자)이 왼쪽 앞에서 딱 뜬 상태로 시작!
+      1.2초간 앞머리를 읽을 수 있게 정지 후 부드럽게 좌측 스크롤
+    */
     .marquee-scroll {
       display: inline-block;
-      padding-left: 100%;
-      animation: marqueeScroll 14s linear infinite;
+      padding-left: 0 !important; /* 뒤에서 기어나오는 지연 완전 제거 */
+      animation: marqueeFromStart 10s linear infinite;
     }
 
-    @keyframes marqueeScroll {
+    @keyframes marqueeFromStart {
       0%   { transform: translateX(0); }
+      15%  { transform: translateX(0); } /* 앞부분 1.5초 정지해 보여줌 */
       100% { transform: translateX(-100%); }
     }
 
@@ -601,9 +610,11 @@
 </head>
 <body>
 
-  <!-- 상단 헤더 -->
+  <!-- ============================================================
+       상단 헤더
+       ============================================================ -->
   <header class="paper-header">
-    <!-- 1. 타이틀 & 다운로드 버튼 -->
+    <!-- 1행: 좌측 타이틀 ↔ 우측 끝 저장 버튼 2개 -->
     <div class="top-brand-row">
       <div class="title-wrap">
         <h1>第2課 黒門市場</h1>
@@ -621,13 +632,13 @@
       </div>
     </div>
 
-    <!-- 2. 가로 50:50 탭 전환 바 -->
+    <!-- 2행: 가로 50:50 탭 전환 바 -->
     <div class="nav-tab-bar">
       <button class="tab-segment active" id="tabBtn1" onclick="switchTab('tab1')">📖 원문 보기</button>
       <button class="tab-segment" id="tabBtn2" onclick="switchTab('tab2')">🔍 문장별 분석</button>
     </div>
 
-    <!-- 3. 학습 옵션 툴바 -->
+    <!-- 3행: 학습 옵션 툴바 -->
     <div class="options-bar">
       <div class="opt-group">
         <span class="opt-label">글자:</span>
@@ -641,14 +652,15 @@
       </div>
     </div>
 
-    <!-- 4. 일체형 플레이어 바 (전광판 자막 텍스트 뷰포트) -->
+    <!-- 4행: 일체형 플레이어 바 -->
     <div class="player-bar">
       <div class="player-left">
-        <button class="btn-play-all" id="btnPlayAll" onclick="togglePlayAll()">▶ 전체연속듣기</button>
+        <!-- 전체연속듣기 -> 전체듣기 -->
+        <button class="btn-play-all" id="btnPlayAll" onclick="togglePlayAll()">▶ 전체듣기</button>
         <button class="btn-stop" id="btnStop" onclick="userStopAudio()">⏹ 정지</button>
       </div>
       
-      <!-- 지문 표시 뷰포트 (선명한 흰색 + 전광판 흐름) -->
+      <!-- 지문 표시 뷰포트 (앞에서부터 즉시 읽을 수 있는 자막 흐름) -->
       <div class="ticker-viewport">
         <div class="ticker-content" id="nowPlayingText">
           문장을 터치하면 해당 음성이 재생됩니다.
@@ -1470,7 +1482,7 @@
       }
     }
 
-    // [요청 반영] 정지 버튼 클릭 시: 정지 문구 표시 & 버튼 빨간색 피드백
+    // 정지 버튼 클릭 시 피드백
     function userStopAudio() {
       stopAudio();
       btnStop.classList.add('is-stopped');
@@ -1480,7 +1492,7 @@
       }, 1200);
     }
 
-    // 지문 표시 함수 (isScroll: true면 전광판처럼 흐르고, false면 가만히 있음)
+    // 지문 표시 함수
     function setTickerText(html, isScroll) {
       nowPlayingText.className = 'ticker-content' + (isScroll ? ' marquee-scroll' : '');
       nowPlayingText.innerHTML = html;
@@ -1494,7 +1506,7 @@
       const d = dialogues.find(x => x.id === id);
       highlightSentence(id);
       
-      // 선명한 하얀색으로 화자 + 일본어 전체 문장 흐름 표시
+      // 문장 앞머리부터 바로 보이도록 전달
       const textToDisplay = `<strong>[${d.speaker.split()[0]}]</strong> ${d.jp_plain}  ──  ${d.ko}`;
       setTickerText(textToDisplay, true);
 
@@ -1506,7 +1518,7 @@
       sentenceTimeout = setTimeout(() => {
         audio.pause();
         stopHighlight();
-        setTickerText('✅ 1회 듣기 완료 (문장을 터치하면 다시 재생)', false);
+        setTickerText('✅ 1회 듣기 완료 (문장 터치 시 다시 재생)', false);
         btnStop.classList.add('is-stopped');
         setTimeout(() => btnStop.classList.remove('is-stopped'), 1000);
       }, duration);
@@ -1518,7 +1530,7 @@
         audio.pause();
         isPlayingAll = false;
         btnPlayAll.classList.remove('playing');
-        btnPlayAll.innerText = '▶ 전체연속듣기';
+        btnPlayAll.innerText = '▶ 전체듣기';
         btnStop.classList.add('is-stopped');
         setTickerText('⏸ 전체 재생이 일시 정지되었습니다.', false);
       } else {
@@ -1527,7 +1539,7 @@
         btnPlayAll.classList.add('playing');
         btnPlayAll.innerText = '⏸ 일시정지';
         btnStop.classList.remove('is-stopped');
-        setTickerText('▶ 전체 연속 재생 시작...', false);
+        setTickerText('▶ 전체 재생 시작...', false);
         audio.currentTime = 0;
         audio.play().catch(() => {});
       }
@@ -1561,7 +1573,7 @@
       audio.pause();
       isPlayingAll = false;
       btnPlayAll.classList.remove('playing');
-      btnPlayAll.innerText = '▶ 전체연속듣기';
+      btnPlayAll.innerText = '▶ 전체듣기';
       stopHighlight();
       currentSentenceId = null;
     }
