@@ -2,7 +2,6 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <!-- 캐시 방지 (카톡 등 모바일 브라우저 즉시 갱신) -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -15,11 +14,13 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   
   <style>
-    /* 
-      [PDF 일체형 디자인 핵심 원칙]
-      1. 배경 전체를 순백색(#ffffff) 단일 톤으로 통일 -> 핀치 줌(확대) 시 좌우 색상 분리 완전 제거!
-      2. sticky / fixed 요소 완전 제거 -> 화면 확대 시 헤더가 붕 떠서 본문을 가리는 현상 100% 제거!
-      3. 문서 전체가 PDF 종이 1장처럼 일체형으로 동일 비율로 확대/축소!
+    /*
+      [핵심 수정: 긴 문장 자동 줄바꿈 & 반응형 최적화]
+      1. word-break: break-all + overflow-wrap: anywhere 
+         -> 일본어/한국어가 절대 화면 밖이나 카드 오른쪽으로 튀어나가지 않고 100% 자동 줄바꿈!
+      2. 100% 완전 단일 순백색(#ffffff) 일체형 배경 -> 좌우 색상 분리 원천 차단
+      3. position: static 헤더 -> 본문과 한 덩어리로 같이 스크롤/확대
+      4. 모바일 화면 폭 100% 풀 반응형 레이아웃
     */
     :root {
       --primary: #2563eb;
@@ -27,14 +28,16 @@
       --ruby-color: #1d4ed8;
       --text-main: #0f172a;
       --text-sub: #475569;
-      --border-line: #cbd5e1;
-      --highlight: #fef08a;
-      --highlight-border: #eab308;
+      --border-line: #e2e8f0;
       --mire-color: #0284c7;
       --manami-color: #059669;
       --ojisan-color: #d97706;
       --stage-color: #64748b;
+      --font-scale: 1.0;
     }
+
+    body.font-large { --font-scale: 1.25; }
+    body.font-xlarge { --font-scale: 1.5; }
 
     * {
       box-sizing: border-box;
@@ -42,22 +45,36 @@
       padding: 0;
     }
 
-    /* 문서 전체 완전 단일 순백색 배경 (좌우 색 분리 원천 차단) */
     html, body {
       width: 100%;
+      min-height: 100%;
       background-color: #ffffff !important;
       color: var(--text-main);
       font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
       line-height: 1.6;
       -webkit-text-size-adjust: 100%;
+      overflow-x: hidden; /* 가로 스크롤 완전 방지 */
     }
 
-    /* 최상단 일체형 헤더 (고정 없음, 본문과 한 덩어리로 같이 움직임) */
+    /* 모든 텍스트 강제 자동 줄바꿈 (옆으로 튀어나감 완전 해결) */
+    .dialogue-text, 
+    .card-japanese, 
+    .card-pron, 
+    .card-ko, 
+    .jp-line,
+    .details-box ul li {
+      word-break: break-all !important;
+      overflow-wrap: anywhere !important;
+      word-wrap: break-word !important;
+      white-space: normal !important;
+    }
+
+    /* 문서 일체형 헤더 (스크롤/확대 시 본문과 같이 한 덩어리로 움직임) */
     header.paper-header {
       width: 100%;
       background: #ffffff;
       border-bottom: 2px solid #0f172a;
-      padding: 16px 14px 12px 14px;
+      padding: 14px 12px 10px 12px;
       max-width: 800px;
       margin: 0 auto;
     }
@@ -67,12 +84,12 @@
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 6px;
+      margin-bottom: 10px;
     }
 
     .title-row h1 {
-      font-size: 1.3rem;
+      font-size: calc(1.2rem * var(--font-scale));
       font-weight: 700;
       color: #0f172a;
       display: flex;
@@ -83,21 +100,21 @@
     .title-row .badge {
       background: #e0e7ff;
       color: #3730a3;
-      font-size: 0.75rem;
-      padding: 2px 8px;
+      font-size: 0.72rem;
+      padding: 2px 7px;
       border-radius: 9999px;
       font-weight: 600;
     }
 
-    /* 심플하고 단단한 툴바 버튼 */
+    /* 초슬림 반응형 툴바 */
     .toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       background: #f8fafc;
-      padding: 10px 12px;
+      padding: 8px 10px;
       border-radius: 8px;
       border: 1px solid var(--border-line);
     }
@@ -105,16 +122,16 @@
     .btn-group {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       flex-wrap: wrap;
     }
 
     button.btn, a.btn {
       font-family: inherit;
-      font-size: 0.85rem;
-      padding: 7px 12px;
+      font-size: 0.82rem;
+      padding: 6px 10px;
       border-radius: 6px;
-      border: 1px solid var(--border-line);
+      border: 1px solid #cbd5e1;
       background: #ffffff;
       color: var(--text-main);
       cursor: pointer;
@@ -124,12 +141,12 @@
       font-weight: 600;
       white-space: nowrap;
       text-decoration: none;
-      transition: all 0.15s;
+      transition: all 0.1s;
+      -webkit-tap-highlight-color: transparent;
     }
 
     button.btn:active, a.btn:active {
       background: #e2e8f0;
-      transform: scale(0.98);
     }
 
     button.btn.active {
@@ -150,36 +167,41 @@
       border-color: #059669;
     }
 
-    /* 일체형 통합 오디오 바 (헤더 바로 아래 위치, 화면을 절대 가리지 않음) */
+    button.btn-sm {
+      padding: 4px 7px;
+      font-size: 0.75rem;
+    }
+
+    /* 일체형 플레이어 바 (헤더 바로 아래 착 붙음) */
     .integrated-player-bar {
       width: 100%;
       max-width: 800px;
-      margin: 10px auto 0 auto;
-      padding: 10px 12px;
+      margin: 8px auto 0 auto;
+      padding: 8px 10px;
       background: #0f172a;
       color: #ffffff;
-      border-radius: 8px;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .player-left {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .player-play-btn {
       background: #38bdf8;
       color: #0f172a;
       border: none;
-      padding: 6px 14px;
-      border-radius: 6px;
+      padding: 5px 12px;
+      border-radius: 5px;
       font-weight: 700;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       cursor: pointer;
     }
 
@@ -187,19 +209,19 @@
       background: #334155;
       color: white;
       border: none;
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 5px 8px;
+      border-radius: 5px;
       cursor: pointer;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
     }
 
     .now-playing-text {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: #94a3b8;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 250px;
+      max-width: 200px;
     }
 
     .now-playing-text strong {
@@ -210,22 +232,22 @@
       background: #334155;
       color: white;
       border: 1px solid #475569;
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-size: 0.8rem;
+      padding: 4px 6px;
+      border-radius: 5px;
+      font-size: 0.75rem;
       cursor: pointer;
     }
 
-    /* 본문 영역 (완전 일체형) */
+    /* 본문 영역 */
     main.document-body {
       width: 100%;
       max-width: 800px;
-      margin: 16px auto;
-      padding: 0 12px 60px 12px;
+      margin: 12px auto;
+      padding: 0 10px 60px 10px;
       background: #ffffff !important;
     }
 
-    /* 요미가나(루비) 렌더링 - 굵고 선명하게 일체형 */
+    /* 요미가나(루비) */
     ruby {
       ruby-position: over;
       ruby-align: center;
@@ -257,18 +279,19 @@
     .dialogue-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
+      width: 100%;
     }
 
     .dialogue-item {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: flex-start;
-      padding: 10px 8px;
+      padding: 8px 6px;
       border-radius: 6px;
       border-bottom: 1px solid #f1f5f9;
-      transition: background 0.1s;
       cursor: pointer;
+      width: 100%;
     }
 
     .dialogue-item:active {
@@ -284,13 +307,13 @@
     .play-btn-circle {
       background: #e2e8f0;
       border: none;
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       color: #1e293b;
       cursor: pointer;
       flex-shrink: 0;
@@ -303,10 +326,10 @@
     }
 
     .speaker-name {
-      width: 65px;
+      width: 60px;
       flex-shrink: 0;
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: calc(1.02rem * var(--font-scale));
       padding-top: 6px;
     }
 
@@ -317,44 +340,45 @@
 
     .dialogue-text {
       flex: 1;
-      font-size: 1.25rem;
+      font-size: calc(1.22rem * var(--font-scale));
       line-height: 2.2;
       font-family: 'Noto Sans JP', sans-serif;
       color: #0f172a;
-      word-break: keep-all;
-      overflow-wrap: break-word;
     }
 
     .dialogue-item.stage-item {
       background: #f8fafc;
-      padding-left: 12px;
+      padding-left: 10px;
       border-left: 3px solid #94a3b8;
     }
 
     .dialogue-item.stage-item .dialogue-text {
-      font-size: 1.05rem;
+      font-size: calc(1.02rem * var(--font-scale));
       color: #475569;
     }
 
-    /* 탭 2: 문장별 상세 분석 카드 */
+    /* 탭 2: 문장별 상세 분석 (화면 꽉 채우는 카드형 & 튀어나감 원천 방지) */
     .scene-title {
       background: #ecfdf5;
       border-left: 5px solid #059669;
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-radius: 6px;
-      margin: 22px 0 14px 0;
+      margin: 18px 0 12px 0;
       font-weight: 700;
       color: #065f46;
-      font-size: 1.15rem;
+      font-size: calc(1.1rem * var(--font-scale));
+      width: 100%;
     }
 
     .card-item {
+      width: 100%;
       border: 1px solid var(--border-line);
       border-radius: 8px;
-      padding: 16px 14px;
-      margin-bottom: 16px;
+      padding: 14px 12px;
+      margin-bottom: 14px;
       background: #ffffff;
       border-left: 5px solid #cbd5e1;
+      overflow: hidden; /* 테두리 밖 넘침 방지 */
     }
 
     .card-item.speaker-mire-card { border-left-color: var(--mire-color); }
@@ -372,68 +396,72 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .card-speaker {
       font-weight: 700;
-      font-size: 1.05rem;
+      font-size: calc(1.02rem * var(--font-scale));
     }
 
     .card-japanese {
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 1.35rem;
+      font-size: calc(1.3rem * var(--font-scale));
       line-height: 2.3;
       font-weight: 500;
       color: #0f172a;
       margin-bottom: 8px;
       cursor: pointer;
-      word-break: keep-all;
+      width: 100%;
     }
 
     .card-pron {
-      font-size: 1.0rem;
+      font-size: calc(0.96rem * var(--font-scale));
       color: #d97706;
       margin-bottom: 6px;
+      line-height: 1.5;
+      width: 100%;
     }
 
     .card-ko {
-      font-size: 1.05rem;
+      font-size: calc(1.02rem * var(--font-scale));
       color: #334155;
       font-weight: 500;
-      margin-bottom: 14px;
-      padding-bottom: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
       border-bottom: 1px dashed var(--border-line);
+      line-height: 1.55;
+      width: 100%;
     }
 
     .card-details-grid {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       background: #f8fafc;
-      padding: 12px;
+      padding: 10px;
       border-radius: 6px;
       border: 1px solid var(--border-line);
+      width: 100%;
     }
 
     .details-box h4 {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: #475569;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       border-bottom: 1px solid #cbd5e1;
       padding-bottom: 3px;
     }
 
     .details-box ul {
       list-style: none;
-      font-size: 0.92rem;
+      font-size: calc(0.88rem * var(--font-scale));
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
     .details-box ul li {
-      word-break: keep-all;
       line-height: 1.45;
     }
 
@@ -446,41 +474,44 @@
         grid-template-columns: 1fr;
       }
       .speaker-name {
-        width: 55px;
+        width: 52px;
       }
-      .dialogue-text {
-        font-size: 1.2rem;
+      main.document-body {
+        padding: 0 8px 60px 8px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- 문서 일체형 헤더 (position: static, 본문과 한 장의 종이처럼 일체형) -->
+  <!-- 문서 일체형 헤더 (고정 없음, 문서와 함께 100% 동일 비율 확대) -->
   <header class="paper-header">
     <div class="title-row">
       <h1>
         <span>第2課 黒門市場 (제2과 구로몬 시장)</span>
         <span class="badge">인터랙티브 회화</span>
       </h1>
-      <button class="btn btn-success" onclick="downloadHtmlFile()" title="오프라인 저장용 파일 다운로드">📥 파일 다운로드</button>
+      <button class="btn btn-sm btn-success" onclick="downloadHtmlFile()" title="오프라인 저장용 파일 다운로드">📥 파일 저장</button>
     </div>
 
-    <!-- 심플 툴바 -->
+    <!-- 심플 반응형 툴바 -->
     <div class="toolbar">
       <div class="btn-group">
         <button class="btn btn-primary active" id="tabBtn1" onclick="switchTab('tab1')">📖 원문 보기</button>
         <button class="btn" id="tabBtn2" onclick="switchTab('tab2')">🔍 문장별 분석</button>
       </div>
       <div class="btn-group">
-        <button class="btn" id="btnToggleRuby" onclick="toggleRuby()">후리가나 토글</button>
+        <button class="btn btn-sm active" id="fontNormalBtn" onclick="setFontScale('normal')">보통</button>
+        <button class="btn btn-sm" id="fontLargeBtn" onclick="setFontScale('large')">크게</button>
+        <button class="btn btn-sm" id="fontXLargeBtn" onclick="setFontScale('xlarge')">아주크게</button>
+        <button class="btn btn-sm" id="btnToggleRuby" onclick="toggleRuby()">후리가나</button>
       </div>
     </div>
 
-    <!-- 일체형 플레이어 바 (화면에 붕 뜨지 않고 본문 상단에 착 붙어 있음) -->
+    <!-- 일체형 플레이어 바 (헤더 바로 아래 위치) -->
     <div class="integrated-player-bar">
       <div class="player-left">
-        <button class="player-play-btn" id="btnPlayAll" onclick="togglePlayAll()">▶ 전체 연속 듣기</button>
+        <button class="player-play-btn" id="btnPlayAll" onclick="togglePlayAll()">▶ 전체연속듣기</button>
         <button class="player-stop-btn" onclick="stopAudio()">⏹ 정지</button>
       </div>
       <div class="now-playing-text" id="nowPlayingText">
@@ -489,7 +520,7 @@
       <div>
         <select class="speed-select" id="speedSelect" onchange="setSpeed(parseFloat(this.value))">
           <option value="0.8">0.8x</option>
-          <option value="1.0" selected>1.0x (보통)</option>
+          <option value="1.0" selected>1.0x</option>
           <option value="1.2">1.2x</option>
         </select>
       </div>
@@ -632,7 +663,7 @@
           <div class="card-speaker speaker-stage">
             👤 지문
           </div>
-          <button class="btn btn-primary" onclick="playSentence(1, 0.0, 3.2)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(1, 0.0, 3.2)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(1, 0.0, 3.2)" title="터치하여 듣기">
@@ -663,7 +694,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(2, 3.2, 8.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(2, 3.2, 8.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(2, 3.2, 8.0)" title="터치하여 듣기">
@@ -694,7 +725,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(3, 8.0, 15.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(3, 8.0, 15.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(3, 8.0, 15.0)" title="터치하여 듣기">
@@ -725,7 +756,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(4, 15.0, 21.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(4, 15.0, 21.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(4, 15.0, 21.0)" title="터치하여 듣기">
@@ -756,7 +787,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(5, 21.0, 34.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(5, 21.0, 34.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(5, 21.0, 34.0)" title="터치하여 듣기">
@@ -787,7 +818,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(6, 34.0, 42.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(6, 34.0, 42.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(6, 34.0, 42.0)" title="터치하여 듣기">
@@ -818,7 +849,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(7, 42.0, 51.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(7, 42.0, 51.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(7, 42.0, 51.0)" title="터치하여 듣기">
@@ -849,7 +880,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(8, 51.0, 54.5)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(8, 51.0, 54.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(8, 51.0, 54.5)" title="터치하여 듣기">
@@ -880,7 +911,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(9, 54.5, 58.5)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(9, 54.5, 58.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(9, 54.5, 58.5)" title="터치하여 듣기">
@@ -911,7 +942,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(10, 58.5, 63.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(10, 58.5, 63.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(10, 58.5, 63.0)" title="터치하여 듣기">
@@ -946,7 +977,7 @@
           <div class="card-speaker speaker-stage">
             👤 지문
           </div>
-          <button class="btn btn-primary" onclick="playSentence(11, 63.0, 66.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(11, 63.0, 66.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(11, 63.0, 66.0)" title="터치하여 듣기">
@@ -977,7 +1008,7 @@
           <div class="card-speaker speaker-manami">
             👤 まなみ (마나미)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(12, 66.0, 69.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(12, 66.0, 69.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(12, 66.0, 69.0)" title="터치하여 듣기">
@@ -1008,7 +1039,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(13, 69.0, 76.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(13, 69.0, 76.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(13, 69.0, 76.0)" title="터치하여 듣기">
@@ -1039,7 +1070,7 @@
           <div class="card-speaker speaker-stage">
             👤 지문
           </div>
-          <button class="btn btn-primary" onclick="playSentence(14, 76.0, 77.5)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(14, 76.0, 77.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(14, 76.0, 77.5)" title="터치하여 듣기">
@@ -1070,7 +1101,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(15, 77.5, 84.0)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(15, 77.5, 84.0)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(15, 77.5, 84.0)" title="터치하여 듣기">
@@ -1101,7 +1132,7 @@
           <div class="card-speaker speaker-ojisan">
             👤 おじさん (아저씨)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(16, 84.0, 89.5)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(16, 84.0, 89.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(16, 84.0, 89.5)" title="터치하여 듣기">
@@ -1132,7 +1163,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(17, 89.5, 94.5)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(17, 89.5, 94.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(17, 89.5, 94.5)" title="터치하여 듣기">
@@ -1163,7 +1194,7 @@
           <div class="card-speaker speaker-ojisan">
             👤 おじさん (아저씨)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(18, 94.5, 101.5)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(18, 94.5, 101.5)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(18, 94.5, 101.5)" title="터치하여 듣기">
@@ -1194,7 +1225,7 @@
           <div class="card-speaker speaker-mire">
             👤 ミレ (미레)
           </div>
-          <button class="btn btn-primary" onclick="playSentence(19, 101.5, 103.65)">▶ 1회 듣기</button>
+          <button class="btn btn-primary btn-sm" onclick="playSentence(19, 101.5, 103.65)">▶ 1회 듣기</button>
         </div>
 
         <div class="card-japanese" onclick="playSentence(19, 101.5, 103.65)" title="터치하여 듣기">
@@ -1254,6 +1285,24 @@
     window.addEventListener('touchstart', unlockAudio, { once: true });
     window.addEventListener('click', unlockAudio, { once: true });
 
+    // Font Scaling
+    function setFontScale(scale) {
+      document.body.classList.remove('font-large', 'font-xlarge');
+      document.getElementById('fontNormalBtn').classList.remove('active');
+      document.getElementById('fontLargeBtn').classList.remove('active');
+      document.getElementById('fontXLargeBtn').classList.remove('active');
+
+      if (scale === 'large') {
+        document.body.classList.add('font-large');
+        document.getElementById('fontLargeBtn').classList.add('active');
+      } else if (scale === 'xlarge') {
+        document.body.classList.add('font-xlarge');
+        document.getElementById('fontXLargeBtn').classList.add('active');
+      } else {
+        document.getElementById('fontNormalBtn').classList.add('active');
+      }
+    }
+
     // 탭 전환
     function switchTab(tabId) {
       document.querySelectorAll('.view-content').forEach(el => el.classList.remove('active'));
@@ -1288,7 +1337,7 @@
       if (isPlayingAll) {
         audio.pause();
         isPlayingAll = false;
-        btnPlayAll.innerText = '▶ 전체 연속 듣기';
+        btnPlayAll.innerText = '▶ 전체연속듣기';
         nowPlayingText.innerText = '일시 정지됨';
       } else {
         stopAudio();
@@ -1325,7 +1374,7 @@
       audio.pause();
       isPlayingAll = false;
       stopHighlight();
-      btnPlayAll.innerText = '▶ 전체 연속 듣기';
+      btnPlayAll.innerText = '▶ 전체연속듣기';
       currentSentenceId = null;
     }
 
