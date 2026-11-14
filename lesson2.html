@@ -20,7 +20,7 @@
       --ruby-color: #1d4ed8;
       --text-main: #0f172a;
       --text-sub: #475569;
-      --border-line: #e2e8f0;
+      --border-line: #cbd5e1;
       --mire-color: #0284c7;
       --manami-color: #059669;
       --ojisan-color: #d97706;
@@ -61,7 +61,7 @@
     }
 
     /* ============================================================
-       [상단 헤더 전면 재설계: 정돈된 모바일 레이아웃]
+       상단 헤더
        ============================================================ */
     header.paper-header {
       width: 100%;
@@ -72,7 +72,7 @@
       margin: 0 auto;
     }
 
-    /* 1행: 타이틀 & 다운로드 버튼 그룹 */
+    /* 1행: 타이틀 & 다운로드 버튼 */
     .top-brand-row {
       display: flex;
       justify-content: space-between;
@@ -133,7 +133,6 @@
       transform: scale(0.97);
     }
 
-    /* HTML 저장 (음성 내장) */
     .btn-html {
       background: #ecfdf5;
       color: #047857;
@@ -143,7 +142,6 @@
       background: #d1fae5;
     }
 
-    /* PDF 저장 (음성 없는 원본 교재) */
     .btn-pdf {
       background: #fef2f2;
       color: #b91c1c;
@@ -153,40 +151,52 @@
       background: #fee2e2;
     }
 
-    /* 2행: 50:50 세그먼트 탭 바 (모바일 최적화) */
+    /* ============================================================
+       [요청 1 반영: 탭 색상 명확화]
+       선택된 탭: 파란색(#2563eb)
+       선택되지 않은 탭: 하얀색(#ffffff)
+       ============================================================ */
     .nav-tab-bar {
       display: flex;
       width: 100%;
-      background: #f1f5f9;
+      background: #f8fafc;
       border-radius: 8px;
-      padding: 3px;
-      gap: 4px;
+      padding: 4px;
+      gap: 6px;
       margin-bottom: 8px;
-      border: 1px solid #e2e8f0;
+      border: 1px solid #cbd5e1;
     }
 
     .tab-segment {
       flex: 1;
       text-align: center;
-      padding: 8px 0;
-      font-size: 0.88rem;
+      padding: 9px 0;
+      font-size: 0.9rem;
       font-weight: 700;
       border-radius: 6px;
-      border: none;
-      background: transparent;
-      color: #64748b;
       cursor: pointer;
       transition: all 0.15s ease;
       -webkit-tap-highlight-color: transparent;
+      
+      /* 디폴트 비활성 상태: 깨끗한 하얀색 배경 */
+      background: #ffffff;
+      color: #475569;
+      border: 1px solid #cbd5e1;
     }
 
     .tab-segment.active {
-      background: var(--primary);
-      color: #ffffff;
-      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
+      /* 활성화 상태: 선명한 파란색 배경 & 흰색 글씨 */
+      background: var(--primary) !important;
+      color: #ffffff !important;
+      border-color: var(--primary) !important;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
     }
 
-    /* 3행: 학습 옵션 툴바 (글자 크기 & 후리가나) */
+    /* ============================================================
+       [요청 2 반영: 후리가나 버튼 디폴트 파란색]
+       디폴트(후리가나 있음): 파란색(#2563eb)
+       누르면(후리가나 없음): 하얀색(#ffffff)
+       ============================================================ */
     .options-bar {
       display: flex;
       justify-content: space-between;
@@ -200,7 +210,7 @@
     .opt-group {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       flex-wrap: wrap;
     }
 
@@ -213,25 +223,43 @@
 
     .btn-chip {
       font-family: inherit;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 4px;
+      padding: 4px 9px;
+      border-radius: 5px;
       border: 1px solid #cbd5e1;
       background: #ffffff;
-      color: var(--text-main);
+      color: #475569;
       cursor: pointer;
-      transition: all 0.1s;
+      transition: all 0.15s;
       -webkit-tap-highlight-color: transparent;
     }
 
     .btn-chip.active {
-      background: #0f172a;
-      color: #ffffff;
-      border-color: #0f172a;
+      background: var(--primary) !important;
+      color: #ffffff !important;
+      border-color: var(--primary) !important;
     }
 
-    /* 4행: 일체형 플레이어 바 */
+    /* 후리가나 토글 전용 스타일 */
+    #btnToggleRuby {
+      background: var(--primary); /* 디폴트 파란색 */
+      color: #ffffff;
+      border-color: var(--primary);
+      font-weight: 700;
+    }
+
+    #btnToggleRuby.ruby-off {
+      background: #ffffff !important; /* 꺼졌을 때 하얀색 */
+      color: #475569 !important;
+      border-color: #cbd5e1 !important;
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       [요청 3 반영: 정지 버튼 상태 색상 피드백]
+       정지 시 색상이 바뀌어 확실한 상태 확인 가능
+       ============================================================ */
     .player-bar {
       width: 100%;
       background: #0f172a;
@@ -255,21 +283,37 @@
       background: #38bdf8;
       color: #0f172a;
       border: none;
-      padding: 5px 12px;
+      padding: 6px 13px;
       border-radius: 5px;
       font-weight: 700;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-play-all.playing {
+      background: #facc15;
+      color: #0f172a;
     }
 
     .btn-stop {
       background: #334155;
-      color: white;
-      border: none;
-      padding: 5px 8px;
+      color: #e2e8f0;
+      border: 1px solid #475569;
+      padding: 6px 10px;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    /* 정지 상태 활성화 색상 (선명한 빨간색/주황색 피드백) */
+    .btn-stop.is-stopped {
+      background: #ef4444 !important;
+      color: #ffffff !important;
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.4);
     }
 
     .now-playing-box {
@@ -556,7 +600,7 @@
 <body>
 
   <!-- ============================================================
-       [상단 헤더: 요청하신 동그라미 친 영역의 정돈된 디자인]
+       상단 헤더
        ============================================================ -->
   <header class="paper-header">
     <!-- 1. 타이틀 & 다운로드 버튼 -->
@@ -577,13 +621,13 @@
       </div>
     </div>
 
-    <!-- 2. 가로 50:50 탭 전환 바 (모바일 터치 최적화) -->
+    <!-- 2. 가로 50:50 탭 전환 바 (누른 것은 파란색, 안 누른 것은 하얀색) -->
     <div class="nav-tab-bar">
       <button class="tab-segment active" id="tabBtn1" onclick="switchTab('tab1')">📖 원문 보기</button>
       <button class="tab-segment" id="tabBtn2" onclick="switchTab('tab2')">🔍 문장별 분석</button>
     </div>
 
-    <!-- 3. 학습 옵션 툴바 (글자 크기 & 후리가나 & 인쇄) -->
+    <!-- 3. 학습 옵션 툴바 (글자 크기 & 디폴트 파란색 후리가나 버튼) -->
     <div class="options-bar">
       <div class="opt-group">
         <span class="opt-label">글자:</span>
@@ -592,8 +636,9 @@
         <button class="btn-chip" id="fontXLargeBtn" onclick="setFontScale('xlarge')">아주크게</button>
       </div>
       <div class="opt-group">
+        <!-- 디폴트 파란색 (후리가나 켜짐), 누르면 하얀색 (꺼짐) -->
         <button class="btn-chip" id="btnToggleRuby" onclick="toggleRuby()">후리가나</button>
-        <button class="btn-chip" onclick="window.print()" title="화면 인쇄 / PDF 출력">🖨️ 인쇄/PDF</button>
+        <button class="btn-chip" onclick="window.print()" title="화면 인쇄 / PDF 출력">🖨️ 인쇄</button>
       </div>
     </div>
 
@@ -601,7 +646,8 @@
     <div class="player-bar">
       <div class="player-left">
         <button class="btn-play-all" id="btnPlayAll" onclick="togglePlayAll()">▶ 전체연속듣기</button>
-        <button class="btn-stop" onclick="stopAudio()">⏹</button>
+        <!-- 정지 버튼: 누르면 정지 상태 색상(빨간색 is-stopped) 피드백 -->
+        <button class="btn-stop" id="btnStop" onclick="userStopAudio()">⏹ 정지</button>
       </div>
       <div class="now-playing-box" id="nowPlayingText">문장 터치 시 재생</div>
       <select class="speed-select" id="speedSelect" onchange="setSpeed(parseFloat(this.value))">
@@ -1352,6 +1398,7 @@
     const audio = document.getElementById('mainAudio');
     const nowPlayingText = document.getElementById('nowPlayingText');
     const btnPlayAll = document.getElementById('btnPlayAll');
+    const btnStop = document.getElementById('btnStop');
 
     let isPlayingAll = false;
     let currentSentenceId = null;
@@ -1390,17 +1437,49 @@
       }
     }
 
-    // 탭 전환
+    // [요청 1 완벽 반영] 탭 전환: 선택된 것은 파란색, 선택 안 된 것은 하얀색
     function switchTab(tabId) {
       document.querySelectorAll('.view-content').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
-      document.getElementById('tabBtn1').classList.toggle('active', tabId === 'tab1');
-      document.getElementById('tabBtn2').classList.toggle('active', tabId === 'tab2');
+      
+      const tab1 = document.getElementById('tabBtn1');
+      const tab2 = document.getElementById('tabBtn2');
+
+      if (tabId === 'tab1') {
+        tab1.classList.add('active');
+        tab2.classList.remove('active');
+      } else {
+        tab2.classList.add('active');
+        tab1.classList.remove('active');
+      }
+    }
+
+    // [요청 2 완벽 반영] 후리가나 토글: 디폴트는 파란색(켜짐), 누르면 하얀색(꺼짐)
+    function toggleRuby() {
+      document.body.classList.toggle('hide-ruby');
+      const isHidden = document.body.classList.contains('hide-ruby');
+      const btn = document.getElementById('btnToggleRuby');
+      
+      if (isHidden) {
+        btn.classList.add('ruby-off'); // 하얀색
+      } else {
+        btn.classList.remove('ruby-off'); // 파란색
+      }
+    }
+
+    // [요청 3 완벽 반영] 정지 버튼 피드백: 정지 시 빨간색(is-stopped)으로 변함
+    function userStopAudio() {
+      stopAudio();
+      btnStop.classList.add('is-stopped');
+      setTimeout(() => {
+        btnStop.classList.remove('is-stopped');
+      }, 1200);
     }
 
     // 문장 재생
     function playSentence(id, start, end) {
       stopAudio();
+      btnStop.classList.remove('is-stopped');
       currentSentenceId = id;
       const d = dialogues.find(x => x.id === id);
       highlightSentence(id);
@@ -1416,6 +1495,8 @@
         audio.pause();
         stopHighlight();
         nowPlayingText.innerText = '재생 완료';
+        btnStop.classList.add('is-stopped');
+        setTimeout(() => btnStop.classList.remove('is-stopped'), 1000);
       }, duration);
     }
 
@@ -1424,12 +1505,16 @@
       if (isPlayingAll) {
         audio.pause();
         isPlayingAll = false;
+        btnPlayAll.classList.remove('playing');
         btnPlayAll.innerText = '▶ 전체연속듣기';
         nowPlayingText.innerText = '일시 정지됨';
+        btnStop.classList.add('is-stopped');
       } else {
         stopAudio();
         isPlayingAll = true;
+        btnPlayAll.classList.add('playing');
         btnPlayAll.innerText = '⏸ 일시정지';
+        btnStop.classList.remove('is-stopped');
         nowPlayingText.innerText = '전체 연속 재생 중...';
         audio.currentTime = 0;
         audio.play().catch(() => {});
@@ -1451,6 +1536,7 @@
     audio.addEventListener('ended', () => {
       stopAudio();
       nowPlayingText.innerText = '전체 재생 완료';
+      btnStop.classList.add('is-stopped');
     });
 
     function stopAudio() {
@@ -1460,8 +1546,9 @@
       }
       audio.pause();
       isPlayingAll = false;
-      stopHighlight();
+      btnPlayAll.classList.remove('playing');
       btnPlayAll.innerText = '▶ 전체연속듣기';
+      stopHighlight();
       currentSentenceId = null;
     }
 
@@ -1481,13 +1568,6 @@
     function setSpeed(rate) {
       audio.playbackRate = rate;
       document.getElementById('speedSelect').value = rate;
-    }
-
-    function toggleRuby() {
-      document.body.classList.toggle('hide-ruby');
-      const isHidden = document.body.classList.contains('hide-ruby');
-      document.getElementById('btnToggleRuby').classList.toggle('active', isHidden);
-      document.getElementById('btnToggleRuby').innerText = isHidden ? '후리가나 숨김' : '후리가나 표시';
     }
 
     // 오프라인 HTML 파일 다운로드
