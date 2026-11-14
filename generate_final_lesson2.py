@@ -823,9 +823,9 @@ html_content = f'''<!DOCTYPE html>
 
     </header>
 
-    <!-- 오디오 엘리먼트 (Base64 인라인 내장) -->
+    <!-- 오디오 엘리먼트 (Base64 인라인 내장: data:audio/mp3;base64,... 필수) -->
     <audio id="mainAudio" preload="auto">
-      <source src="{audio_b64}" type="audio/mp3">
+      <source src="data:audio/mp3;base64,{audio_b64}" type="audio/mp3">
     </audio>
 
     <!-- 탭 1: 원문 보기 -->
@@ -853,21 +853,6 @@ html_content = f'''<!DOCTYPE html>
     let currentSentenceId = null;
     let sentenceTimeout = null;
     let repeatRemaining = 0;
-
-    // 모바일 터치 오디오 언락
-    let audioUnlocked = false;
-    function unlockAudio() {{
-      if (audioUnlocked) return;
-      audio.play().then(() => {{
-        audio.pause();
-        audio.currentTime = 0;
-        audioUnlocked = true;
-      }}).catch(() => {{}});
-      window.removeEventListener('touchstart', unlockAudio);
-      window.removeEventListener('click', unlockAudio);
-    }}
-    window.addEventListener('touchstart', unlockAudio, {{ once: true }});
-    window.addEventListener('click', unlockAudio, {{ once: true }});
 
     // 글자 크기 변경
     function setFontScale(scale) {{
@@ -1009,7 +994,7 @@ html_content = f'''<!DOCTYPE html>
           audio.pause();
           setTickerText('⏸ 전체 재생이 일시 정지되었습니다.', false);
         }} else {{
-          audio.play().catch(() => {{}});
+          audio.play().catch(e => console.error(e));
           const d = dialogues.find(x => audio.currentTime >= x.start && audio.currentTime < x.end);
           if (d) setTickerText(d.jp_plain, true);
         }}
@@ -1017,7 +1002,7 @@ html_content = f'''<!DOCTYPE html>
         stopAudio();
         currentMode = 'all';
         audio.currentTime = 0;
-        audio.play().catch(() => {{}});
+        audio.play().catch(e => console.error(e));
         const d = dialogues[0];
         currentSentenceId = d.id;
         highlightSentence(d.id);
@@ -1055,7 +1040,10 @@ html_content = f'''<!DOCTYPE html>
       setTickerText(d.jp_plain, true);
 
       audio.currentTime = start;
-      audio.play().catch(() => {{}});
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {{
+        playPromise.catch(e => console.error("Playback error:", e));
+      }}
       updatePlaybackUI();
 
       const duration = (end - start) * 1000 / audio.playbackRate;
@@ -1100,7 +1088,7 @@ html_content = f'''<!DOCTYPE html>
           audio.pause();
           setTickerText('⏸ 일시 정지되었습니다.', false);
         }} else {{
-          audio.play().catch(() => {{}});
+          audio.play().catch(e => console.error(e));
           setTickerText(d.jp_plain, true);
           const remaining = Math.max(0.1, (d.end - audio.currentTime)) * 1000 / audio.playbackRate;
           sentenceTimeout = setTimeout(() => {{
@@ -1127,7 +1115,7 @@ html_content = f'''<!DOCTYPE html>
           audio.pause();
           setTickerText('⏸ 일시 정지되었습니다.', false);
         }} else {{
-          audio.play().catch(() => {{}});
+          audio.play().catch(e => console.error(e));
           setTickerText(d.jp_plain, true);
           const remaining = Math.max(0.1, (d.end - audio.currentTime)) * 1000 / audio.playbackRate;
           sentenceTimeout = setTimeout(() => {{
@@ -1154,7 +1142,7 @@ html_content = f'''<!DOCTYPE html>
           audio.pause();
           setTickerText('⏸ 3회 반복이 일시 정지되었습니다.', false);
         }} else {{
-          audio.play().catch(() => {{}});
+          audio.play().catch(e => console.error(e));
           setTickerText(d.jp_plain, true);
           const remaining = Math.max(0.1, (d.end - audio.currentTime)) * 1000 / audio.playbackRate;
           sentenceTimeout = setTimeout(() => {{
